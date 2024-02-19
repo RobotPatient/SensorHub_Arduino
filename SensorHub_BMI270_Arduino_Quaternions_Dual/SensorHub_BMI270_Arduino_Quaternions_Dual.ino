@@ -2,8 +2,9 @@
 *. J.A. Korten Feb 19, 2024
 * Basic implementation of head positioning sensor with sensor Fusion (gyro + accelerometer)
 * using a Quaternion-based Sensor Fusion approach.
+* 
+* This version includes readings of the body sensor as a reference for the head positioning sensor.
 */
-
 
 #include <Wire.h>  // Backbone
 #include "SensorHub_Settings.h"
