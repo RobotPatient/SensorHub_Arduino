@@ -76,8 +76,9 @@ void updateSensor(BMI270 *imu) {
   Vector3D accel = Vector3D(imu->data.accelX, imu->data.accelY, imu->data.accelZ);
   Vector3D gyro = Vector3D(imu->data.gyroX, imu->data.gyroY, imu->data.gyroZ);
 
+  /* To check inside the objects (i.e. if the sensor gave any output): */
   // accel.printToSerial();
-  gyro.printToSerial();
+  // gyro.printToSerial();
 
   Quaternion deltaQ = Quaternion(1.0, gyro.x * dt / 2.0, gyro.y * dt / 2.0, gyro.z * dt / 2.0);
   q = q * deltaQ;
