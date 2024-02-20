@@ -100,10 +100,10 @@ Quaternion updateSensor(BMI270 *imu, Quaternion *q) {
   q->normalize();
 
   // Update orientation with accelerometer data
-  Vector3D gravity = Vector3D(0, 0, -1);                         // Define gravity vector in sensor frame
+  Vector3D gravity = Vector3D(0, 0, -1);                          // Define gravity vector in sensor frame
   Vector3D estimatedGravity = q->rotate(gravity);                 // Rotate gravity vector using current orientation
-  Vector3D error = accel - estimatedGravity;                     // Calculate error between measured and estimated gravity vectors
-  Vector3D correction = error * (beta / sampleRate);             // Apply correction
+  Vector3D error = accel - estimatedGravity;                      // Calculate error between measured and estimated gravity vectors
+  Vector3D correction = error * (beta / sampleRate);              // Apply correction
   *q += Quaternion(0, correction.x, correction.y, correction.z);  // Update quaternion
 
 
