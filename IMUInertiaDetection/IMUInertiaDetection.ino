@@ -14,6 +14,7 @@
 #include "SensorTools.h"
 #include "Quaternion.h"
 #include "Vector3D.h"
+#include "IMUInertiaController.h"
 #include "IMUInertiaHelper.h"
 
 // Create a new sensor object, make sure you connect the body sensor on Port B and head sensor on Port A
@@ -73,25 +74,6 @@ void setup() {
   delay(1500);  // note: this is critical.
   updateSensor3DVector(&imuBody, &stationaryDetectorBody);
   updateSensor3DVector(&imuHead, &stationaryDetectorHead);
-}
-
-
-void updateSensor3DVector(BMI270 *imu, IMUInertiaHelper *helper) {
-  imu->getSensorData();
-  delay(25);
-
-  Vector3D accel = Vector3D(imu->data.accelX, imu->data.accelY, imu->data.accelZ);
-
-  helper->recordCurrentValues(accel);
-}
-
-void updateSensor(BMI270 *imu, IMUInertiaHelper *helper, String sensorLabel) {
-  imu->getSensorData();
-  delay(25);
-
-  Vector3D currentValues = Vector3D(imu->data.accelX, imu->data.accelY, imu->data.accelZ);
-  const bool REPORT_SENSOR_STATE = true;
-  bool inStasis = helper->checkForStasis(currentValues, REPORT_SENSOR_STATE, sensorLabel);
 }
 
 void loop() {
