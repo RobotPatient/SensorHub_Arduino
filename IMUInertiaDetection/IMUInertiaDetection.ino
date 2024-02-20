@@ -28,24 +28,10 @@ TwoWire WireBackbone(&sercom3, W0_SDA, W0_SCL);  // Main
 TwoWire WireSensorA(&sercom1, W1_SDA, W1_SCL);   // Sensor A
 TwoWire WireSensorB(&sercom4, W2_SDA, W2_SCL);   // Sensor B
 
-//Quaternion q(1, 0, 0, 0);  // Initial orientation quaternion
-Quaternion bodyQuaternion(1, 0, 0, 0);
-Quaternion headQuaternion(1, 0, 0, 0);
 
 const Vector3D thresholds(0.055, 0.05, 0.05);
 Vector3D thBaseForHeadSensor(0.0, 0.0, 0.0);
 Vector3D thBaseForBodySensor(0.0, 0.0, 0.0);
-
-#define beta 0.1               // Filter gain
-#define sampleRate 1000        // Sample rate in Hz
-#define dt (1.0 / sampleRate)  // Time interval
-
-bool _sensor_initialized = false;
-const int interval = 100;  // / sampleRate;
-
-// Define threshold and duration values
-const float THRESHOLD = 0.005;       // Adjust this threshold as needed
-const unsigned long DURATION = 100;  // Duration in milliseconds
 
 IMUInertiaHelper stationaryDetectorHead(thresholds);
 IMUInertiaHelper stationaryDetectorBody(thresholds);
@@ -85,26 +71,9 @@ void setup() {
   }
 
   delay(1500);  // note: this is critical.
-
-
   updateSensor3DVector(&imuBody, &stationaryDetectorBody);
   updateSensor3DVector(&imuHead, &stationaryDetectorHead);
 }
-
-/*
-
-bool twoTailedInBetween(float value, float baseValue, float threshold) {
-  return (value > baseValue - threshold) && (value < baseValue + threshold);
-}
-
-bool checkForStasis(Vector3D currentValues, Vector3D baseValues, Vector3D thresholds) {
-  bool resultX = twoTailedInBetween(currentValues.x, baseValues.x, thresholds.x);
-  bool resultY = twoTailedInBetween(currentValues.y, baseValues.y, thresholds.y);
-  bool resultZ = twoTailedInBetween(currentValues.z, baseValues.z, thresholds.z);
-
-  return resultX && resultY && resultZ;
-}
-*/
 
 void updateSensor3DVector(BMI270 *imu, IMUInertiaHelper *helper) {
   delay(25);
