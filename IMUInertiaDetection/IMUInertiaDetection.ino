@@ -47,8 +47,8 @@ const int interval = 100;  // / sampleRate;
 const float THRESHOLD = 0.005;       // Adjust this threshold as needed
 const unsigned long DURATION = 100;  // Duration in milliseconds
 
-//IMUInertiaHelper stationaryDetectorHead(thresholds);
-//IMUInertiaHelper stationaryDetectorBody(thresholds);
+IMUInertiaHelper stationaryDetectorHead(thresholds);
+IMUInertiaHelper stationaryDetectorBody(thresholds);
 
 
 void setupSensorHub() {
@@ -84,11 +84,14 @@ void setup() {
       ;
   }
 
-  delay(1500); // note: this is critical.
-  thBaseForBodySensor = updateSensor3DVector(&imuBody);
-  thBaseForHeadSensor = updateSensor3DVector(&imuHead);
-  
+  delay(1500);  // note: this is critical.
+
+
+  updateSensor3DVector(&imuBody, &stationaryDetectorBody);
+  updateSensor3DVector(&imuHead, &stationaryDetectorHead);
 }
+
+/*
 
 bool twoTailedInBetween(float value, float baseValue, float threshold) {
   return (value > baseValue - threshold) && (value < baseValue + threshold);
@@ -101,23 +104,26 @@ bool checkForStasis(Vector3D currentValues, Vector3D baseValues, Vector3D thresh
 
   return resultX && resultY && resultZ;
 }
+*/
 
-Vector3D updateSensor3DVector(BMI270 *imu) {
+void updateSensor3DVector(BMI270 *imu, IMUInertiaHelper *helper) {
   delay(25);
   imu->getSensorData();
   delay(25);
 
   Vector3D accel = Vector3D(imu->data.accelX, imu->data.accelY, imu->data.accelZ);
-  return accel;
+
+  helper->recordCurrentValues(accel);
 }
 
-void updateSensor(BMI270 *imu, Vector3D baseValues, Vector3D thresholds, String sensorLabel) {
+void updateSensor(BMI270 *imu, IMUInertiaHelper *helper, String sensorLabel) {
 
   delay(25);
   imu->getSensorData();
 
   Vector3D accel = Vector3D(imu->data.accelX, imu->data.accelY, imu->data.accelZ);
 
+  helper->checkForStasis(Vector3D currentValues, Vector3D baseValues, Vector3D thresholds)
   bool inStasis = checkForStasis(accel, baseValues, thresholds);
 
   if (inStasis) {
@@ -146,11 +152,10 @@ void updateSensor(BMI270 *imu, Vector3D baseValues, Vector3D thresholds, String 
   Serial.print(",");
   Serial.print(baseValues.z);
   Serial.println("]");
-
 }
 
 void loop() {
   delay(50);
-  updateSensor(&imuBody, thBaseForBodySensor, thresholds, "body");
-  updateSensor(&imuHead, thBaseForHeadSensor, thresholds, "head");
+  updateSensor(&imuBody, &stationaryDetectorBody, "body");
+  updateSensor(&imuHead, &stationaryDetectorHead, "head");
 }
