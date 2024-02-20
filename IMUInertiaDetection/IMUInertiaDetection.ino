@@ -75,8 +75,8 @@ void setup() {
   updateSensor3DVector(&imuHead, &stationaryDetectorHead);
 }
 
+
 void updateSensor3DVector(BMI270 *imu, IMUInertiaHelper *helper) {
-  delay(25);
   imu->getSensorData();
   delay(25);
 
@@ -86,9 +86,8 @@ void updateSensor3DVector(BMI270 *imu, IMUInertiaHelper *helper) {
 }
 
 void updateSensor(BMI270 *imu, IMUInertiaHelper *helper, String sensorLabel) {
-
-  delay(25);
   imu->getSensorData();
+  delay(25);
 
   Vector3D currentValues = Vector3D(imu->data.accelX, imu->data.accelY, imu->data.accelZ);
   const bool REPORT_SENSOR_STATE = true;
@@ -96,7 +95,7 @@ void updateSensor(BMI270 *imu, IMUInertiaHelper *helper, String sensorLabel) {
 }
 
 void loop() {
-  delay(50);
   updateSensor(&imuBody, &stationaryDetectorBody, "body");
   updateSensor(&imuHead, &stationaryDetectorHead, "head");
+  delay(50);
 }
