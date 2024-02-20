@@ -121,37 +121,9 @@ void updateSensor(BMI270 *imu, IMUInertiaHelper *helper, String sensorLabel) {
   delay(25);
   imu->getSensorData();
 
-  Vector3D accel = Vector3D(imu->data.accelX, imu->data.accelY, imu->data.accelZ);
+  Vector3D currentValues = Vector3D(imu->data.accelX, imu->data.accelY, imu->data.accelZ);
 
-  helper->checkForStasis(Vector3D currentValues, Vector3D baseValues, Vector3D thresholds)
-  bool inStasis = checkForStasis(accel, baseValues, thresholds);
-
-  if (inStasis) {
-    Serial.print("Sensor " + sensorLabel + " is in stasis. (");
-    Serial.print(accel.x);
-    Serial.print(",");
-    Serial.print(accel.y);
-    Serial.print(",");
-    Serial.print(accel.z);
-    Serial.print(")");
-  } else {
-    Serial.print("Sensor " + sensorLabel + " is in movement. (");
-    Serial.print(accel.x);
-    Serial.print(",");
-    Serial.print(accel.y);
-    Serial.print(",");
-    Serial.print(accel.z);
-    Serial.print(")");
-    //accel.printToSerial();
-  }
-
-  Serial.print(" thresholds [");
-  Serial.print(baseValues.x);
-  Serial.print(",");
-  Serial.print(baseValues.y);
-  Serial.print(",");
-  Serial.print(baseValues.z);
-  Serial.println("]");
+  bool inStasis = helper->checkForStasis(currentValues, true, sensorLabel);
 }
 
 void loop() {

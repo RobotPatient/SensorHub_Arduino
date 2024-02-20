@@ -51,8 +51,11 @@ public:
 
     void recordCurrentValues(Vector3D currentValues);
 
+    bool checkForStasis(Vector3D currentValues, bool printResult = false, String label = "");
     bool twoTailedInBetween(float value, float baseValue, float threshold);
-    bool checkForStasis(Vector3D currentValues, Vector3D baseValues, Vector3D thresholds);
+    void printValues(Vector3D values, String label, bool inStasis);
+    void printThresholds();
+
 private:
     Vector3D _thresholds = Vector3D(0.01, 0.01, 0.01);
     Vector3D _inertiaBase = Vector3D(0.0, 0.0, 0.0);

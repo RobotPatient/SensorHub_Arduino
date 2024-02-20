@@ -44,7 +44,6 @@
 #include "Vector3D.h"
 
 IMUInertiaHelper::IMUInertiaHelper() {
-  
 }
 
 IMUInertiaHelper::IMUInertiaHelper(Vector3D thresholds) {
@@ -75,10 +74,42 @@ bool IMUInertiaHelper::twoTailedInBetween(float value, float baseValue, float th
  * @brief This method determines if the (sensor readings) values fall within or outside of the acceptable margins that define inertia.
  */
 
-bool IMUInertiaHelper::checkForStasis(Vector3D currentValues, Vector3D baseValues, Vector3D thresholds) {
-  bool resultX = twoTailedInBetween(currentValues.x, baseValues.x, thresholds.x);
-  bool resultY = twoTailedInBetween(currentValues.y, baseValues.y, thresholds.y);
-  bool resultZ = twoTailedInBetween(currentValues.z, baseValues.z, thresholds.z);
+bool IMUInertiaHelper::checkForStasis(Vector3D currentValues, bool printResult, String label) {
+  bool result = false;
 
-  return resultX && resultY && resultZ;
+  bool resultX = twoTailedInBetween(currentValues.x, _inertiaBase.x, _thresholds.x);
+  bool resultY = twoTailedInBetween(currentValues.y, _inertiaBase.y, _thresholds.y);
+  bool resultZ = twoTailedInBetween(currentValues.z, _inertiaBase.z, _thresholds.z);
+
+  result = resultX && resultY && resultZ;
+  if (printResult) {
+    printValues(currentValues, label, result);
+    printThresholds();
+  }
+
+  return result;
+}
+
+void IMUInertiaHelper::printValues(Vector3D values, String label, bool inStasis) {
+  String stasisLabel = "";
+  if (!inStasis) {
+    stasisLabel = "not";
+  }
+  Serial.print("Sensor " + label + " is " + stasisLabel + " in stasis. (");
+  Serial.print(values.x);
+  Serial.print(",");
+  Serial.print(values.y);
+  Serial.print(",");
+  Serial.print(values.z);
+  Serial.print(")");
+}
+
+void IMUInertiaHelper::printThresholds() {
+  Serial.print(" thresholds [");
+  Serial.print(_inertiaBase.x);
+  Serial.print(",");
+  Serial.print(_inertiaBase.y);
+  Serial.print(",");
+  Serial.print(_inertiaBase.z);
+  Serial.println("]");
 }
