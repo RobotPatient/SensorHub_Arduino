@@ -91,8 +91,8 @@ void updateSensor(BMI270 *imu, IMUInertiaHelper *helper, String sensorLabel) {
   imu->getSensorData();
 
   Vector3D currentValues = Vector3D(imu->data.accelX, imu->data.accelY, imu->data.accelZ);
-
-  bool inStasis = helper->checkForStasis(currentValues, true, sensorLabel);
+  const bool REPORT_SENSOR_STATE = true;
+  bool inStasis = helper->checkForStasis(currentValues, REPORT_SENSOR_STATE, sensorLabel);
 }
 
 void loop() {
