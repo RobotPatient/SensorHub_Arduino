@@ -4,6 +4,8 @@
 * using a Quaternion-based Sensor Fusion approach.
 * 
 * This version includes readings of the body sensor as a reference for the head positioning sensor.
+*
+* Note: while this code works in essence, it suffers from drift so is not a definitive solution. 
 */
 
 #include <Wire.h>  // Backbone
@@ -83,7 +85,7 @@ void setup() {
 Quaternion updateSensor(BMI270 *imu, Quaternion *q) {
 
   imu->getSensorData();
-  // delay(25);
+  //delay(25);
   //delay(20);
 
   Vector3D accel = Vector3D(imu->data.accelX, imu->data.accelY, imu->data.accelZ);
