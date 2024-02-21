@@ -85,9 +85,8 @@ void setup() {
 Quaternion updateSensor(BMI270 *imu, Quaternion *q) {
 
   imu->getSensorData();
-  //delay(25);
-  //delay(20);
-
+  //delay(25);  // don't read too fast after eachother, in this case we also have a delay in the 'caller' so commented out.
+  
   Vector3D accel = Vector3D(imu->data.accelX, imu->data.accelY, imu->data.accelZ);
   Vector3D gyro = Vector3D(imu->data.gyroX, imu->data.gyroY, imu->data.gyroZ);
 
