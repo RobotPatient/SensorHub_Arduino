@@ -41,7 +41,9 @@ const Vector3D thresholds(0.055, 0.05, 0.05);
 IMUInertiaHelper stationaryDetectorHead(thresholds);
 IMUInertiaHelper stationaryDetectorBody(thresholds);
 
-Sensor_fusion_method fusion_method = SF_Mahony;  // Alt: SF_Madgwick
+void printQuaternionsAsEulerAngles(Quaternion qBody, Quaternion qHead); // prototype
+
+Sensor_fusion_method fusion_method = SF_Mahony;  // Alt: SF_Madgwick, but seems that our Madgwick implementation has still issues (or is just not performing as well as Mahony (understatement))
 
 void setupSensorHub() {
   delay(1500);
@@ -65,6 +67,7 @@ void setupSensorHub() {
 void setup() {
   setupSensorHub();
 
+  // Note: When using two IMU's on the same port please solder the jumper to set BMI2_I2C_PRIM_ADDR and BMI2_I2C_SEC_ADDR
   if (detectIMU(&imuBody, BMI2_I2C_PRIM_ADDR, &WireSensorB, "WireSensorB")) num_sensors_detected++;
   if (detectIMU(&imuHead, BMI2_I2C_SEC_ADDR, &WireSensorB, "WireSensorB")) num_sensors_detected++;
 
@@ -80,21 +83,23 @@ void setup() {
 
   delay(1500);  // note: this is critical.
   updateSensor3DVector(&imuBody, &stationaryDetectorBody, fusion_method);
-  delay(100);
   updateSensor3DVector(&imuHead, &stationaryDetectorHead, fusion_method);
-  delay(100);
 }
+
+
+
+// Note: In case you get NaN issues it might be your sensor is not detected 
+// ToDo: resolve this in the library (i.e. ignore the particular sensor).
 
 void loop() {
   hbLEDBlinker.update();
 
   Quaternion qBody = updateSensor(&imuBody, &stationaryDetectorBody, fusion_method, "body");
-  delay(25);
   Quaternion qHead = updateSensor(&imuHead, &stationaryDetectorHead, fusion_method, "head");
-  delay(25);
+  printQuaternionsAsEulerAngles(qBody, qHead);
+}
 
-  // Note if you get nan issues it might be your sensor is not detected ToDo: resolve this in the library (ignore the particular sensor).
-
+void printQuaternionsAsEulerAngles(Quaternion qBody, Quaternion qHead) {
   float roll, pitch, yaw;
   qBody.toEulerAngles(roll, pitch, yaw);
   qBody.printEulerAngles(roll, pitch, yaw, "body");  // just for debugging!
