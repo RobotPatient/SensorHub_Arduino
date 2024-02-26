@@ -50,7 +50,6 @@ IMUInertiaHelper::IMUInertiaHelper(Vector3D thresholds) {
   _thresholds = thresholds;
 }
 
-
 /*!
  * @brief This method records the base line of the sensor.
  * Note: First, make sure that you let the sensor become motionless first (± 1.5 seconds after initialization) before you call this method
@@ -60,7 +59,6 @@ IMUInertiaHelper::IMUInertiaHelper(Vector3D thresholds) {
 void IMUInertiaHelper::recordCurrentValues(Vector3D currentValues) {
   _inertiaBase = currentValues;
 }
-
 
 /*!
  * @brief This method is a helper to determine if the (sensor reading) value falls within or outside of the acceptable margins that define inertia.
@@ -88,6 +86,27 @@ bool IMUInertiaHelper::checkForStasis(Vector3D currentValues, bool printResult, 
   }
 
   return result;
+}
+
+
+bool IMUInertiaHelper::isDelayNeeded() {
+  static unsigned long lastSensorDataUpdate = 0;
+  bool delayNeeded = (lastSensorDataUpdate < millis() + min_update_interval);
+  if (!delayNeeded) {
+    lastSensorDataUpdate = millis();
+  }
+  return delayNeeded;
+}
+
+void IMUInertiaHelper::checkIfDelayIsNeeded() {
+  if (isDelayNeeded()) {
+    delay(min_update_interval);
+  }
+}
+
+void IMUInertiaHelper::updateSensorData(BMI270 *imu) {
+  checkIfDelayIsNeeded();
+  imu->getSensorData();
 }
 
 void IMUInertiaHelper::printValues(Vector3D values, String label, bool inStasis) {

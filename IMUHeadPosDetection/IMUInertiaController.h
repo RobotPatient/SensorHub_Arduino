@@ -42,22 +42,48 @@
 
 #include "IMUInertiaHelper.h"
 #include "IMUHelper.h"
+#include "SensorFusionHelper.h"
 
 
-
-
-void updateSensor3DVector(BMI270 *imu, IMUInertiaHelper *helper) {
-  updateSensorData(imu);
+void updateSensor3DVector(BMI270 *imu, IMUInertiaHelper *helper, Sensor_fusion_method method) {
+  helper->updateSensorData(imu);
 
   Vector3D accel = Vector3D(imu->data.accelX, imu->data.accelY, imu->data.accelZ);
 
   helper->recordCurrentValues(accel);
 }
 
-void updateSensor(BMI270 *imu, IMUInertiaHelper *helper, String sensorLabel) {
-  updateSensorData(imu);
+void updateSensor(BMI270 *imu, IMUInertiaHelper *helper, Sensor_fusion_method method, String sensorLabel) {
+  static Quaternion orientation = Quaternion(1.0, 0.0, 0.0, 0.0);
+
+  helper->updateSensorData(imu);
+
+  // updateSensorData(BMI270 *imu, Quaternion *q, Sensor_fusion_method method)
 
   Vector3D currentValues = Vector3D(imu->data.accelX, imu->data.accelY, imu->data.accelZ);
   const bool REPORT_SENSOR_STATE = true;
   bool inStasis = helper->checkForStasis(currentValues, REPORT_SENSOR_STATE, sensorLabel);
+
+  if (inStasis) {
+    // recalibrate if needed.
+  }
+
+  Vector3D accel3D = Vector3D(imu->data.accelX, imu->data.accelY, imu->data.accelZ);
+  Vector3D gyro3D = Vector3D(imu->data.gyroX, imu->data.gyroY, imu->data.gyroZ);
+
+  // Convert gyroscope readings to radians per second
+  gyro3D.x *= DEG_TO_RAD;
+  gyro3D.y *= DEG_TO_RAD;
+  gyro3D.z *= DEG_TO_RAD;
+  gyro3D.printToSerial();
+
+  Quaternion deltaQ = computeQuaternion(accel3D, gyro3D, method);
+  // Update orientation quaternion
+  orientation = orientation * deltaQ;
+  orientation.normalize();  // Normalize quaternion
+
+  float roll, pitch, yaw;
+  orientation.toEulerAngles(roll, pitch, yaw);
+  orientation.printEulerAngles(roll, pitch, yaw, sensorLabel); // just for debugging!
+ 
 }

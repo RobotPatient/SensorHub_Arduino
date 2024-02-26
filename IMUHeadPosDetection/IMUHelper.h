@@ -6,6 +6,8 @@
 #ifndef IMUHelper_h
 #define IMUHelper_h
 
+/*
+
 #define min_update_interval 25
 
 bool isDelayNeeded() {
@@ -27,5 +29,7 @@ void updateSensorData(BMI270 *imu) {
   checkIfDelayIsNeeded();
   imu->getSensorData();
 }
+
+*/
 
 #endif /* IMUHelper */

@@ -53,13 +53,17 @@ public:
   }
 
   // Quaternion multiplication
-  Quaternion operator*(const Quaternion& q) {
-    Quaternion result;
-    result.w = w * q.w - x * q.x - y * q.y - z * q.z;
-    result.x = w * q.x + x * q.w + y * q.z - z * q.y;
-    result.y = w * q.y - x * q.z + y * q.w + z * q.x;
-    result.z = w * q.z + x * q.y - y * q.x + z * q.w;
-    return result;
+  Quaternion operator*(const Quaternion& q) const {
+    return Quaternion(
+      w * q.w - x * q.x - y * q.y - z * q.z,
+      w * q.x + x * q.w + y * q.z - z * q.y,
+      w * q.y - x * q.z + y * q.w + z * q.x,
+      w * q.z + x * q.y - y * q.x + z * q.w);
+  }
+
+  // Quaternion multiplication by a scalar
+  Quaternion operator*(const float scalar) const {
+    return Quaternion(w * scalar, x * scalar, y * scalar, z * scalar);
   }
 
   // Quaternion addition
@@ -103,6 +107,19 @@ public:
     Serial.print(", ");
     Serial.print(z);
     Serial.println(")");
+  }
+
+  void printEulerAngles(float roll, float pitch, float yaw, String label) {
+    Serial.print("Roll: ");
+    Serial.print(roll);
+    Serial.print(" pitch: ");
+    Serial.print(pitch);
+    Serial.print(" yaw: ");
+    Serial.print(yaw);
+    Serial.print(" (");
+    Serial.print(label);
+    Serial.print(")");
+    Serial.println();
   }
 
   Quaternion operator-(const Quaternion& rhs) const {

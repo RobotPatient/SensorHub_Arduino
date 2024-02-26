@@ -44,23 +44,31 @@
 #include <Arduino.h>
 #include "Vector3D.h"
 #include "InertiaMeasurements.h"
+#include "SparkFun_BMI270_Arduino_Library.h"
+
+
+#define min_update_interval 25  // Consideration: maybe use the constructor to update this?
 
 class IMUInertiaHelper {
 public:
-    
-    IMUInertiaHelper();
-    IMUInertiaHelper(Vector3D thresholds);
 
-    void recordCurrentValues(Vector3D currentValues);
+  IMUInertiaHelper();
+  IMUInertiaHelper(Vector3D thresholds);
 
-    bool checkForStasis(Vector3D currentValues, bool printResult = false, String label = "");
-    bool twoTailedInBetween(float value, float baseValue, float threshold);
-    void printValues(Vector3D values, String label, bool inStasis);
-    void printThresholds();
+  void recordCurrentValues(Vector3D currentValues);
+
+  bool checkForStasis(Vector3D currentValues, bool printResult = false, String label = "");
+  bool twoTailedInBetween(float value, float baseValue, float threshold);
+  void printValues(Vector3D values, String label, bool inStasis);
+  void printThresholds();
+
+  void updateSensorData(BMI270 *imu);
+  bool isDelayNeeded();
+  void checkIfDelayIsNeeded();
 
 private:
-    Vector3D _thresholds = Vector3D(0.01, 0.01, 0.01);
-    Vector3D _inertiaBase = Vector3D(0.0, 0.0, 0.0);
+  Vector3D _thresholds = Vector3D(0.01, 0.01, 0.01);
+  Vector3D _inertiaBase = Vector3D(0.0, 0.0, 0.0);
 };
 
 #endif
