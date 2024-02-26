@@ -119,7 +119,6 @@ public:
     Serial.print(" (");
     Serial.print(label);
     Serial.print(")");
-    Serial.println();
   }
 
   Quaternion operator-(const Quaternion& rhs) const {

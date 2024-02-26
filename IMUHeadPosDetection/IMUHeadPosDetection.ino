@@ -37,16 +37,11 @@ TwoWire WireBackbone(&sercom3, W0_SDA, W0_SCL);  // Main
 TwoWire WireSensorA(&sercom1, W1_SDA, W1_SCL);   // Sensor A
 TwoWire WireSensorB(&sercom4, W2_SDA, W2_SCL);   // Sensor B
 
-
 const Vector3D thresholds(0.055, 0.05, 0.05);
-//Vector3D thBaseForHeadSensor(0.0, 0.0, 0.0);
-//Vector3D thBaseForBodySensor(0.0, 0.0, 0.0);
-
 IMUInertiaHelper stationaryDetectorHead(thresholds);
 IMUInertiaHelper stationaryDetectorBody(thresholds);
 
 Sensor_fusion_method fusion_method = SF_Mahony;  // Alt: SF_Madgwick
-
 
 void setupSensorHub() {
   delay(1500);
@@ -70,7 +65,7 @@ void setupSensorHub() {
 void setup() {
   setupSensorHub();
 
-  if (detectIMU(&imuBody, BMI2_I2C_PRIM_ADDR, &WireSensorA, "WireSensorA")) num_sensors_detected++;
+  if (detectIMU(&imuBody, BMI2_I2C_PRIM_ADDR, &WireSensorB, "WireSensorB")) num_sensors_detected++;
   if (detectIMU(&imuHead, BMI2_I2C_SEC_ADDR, &WireSensorB, "WireSensorB")) num_sensors_detected++;
 
   if (NUM_SENSORS_CONNECTED == num_sensors_detected) {
@@ -85,13 +80,32 @@ void setup() {
 
   delay(1500);  // note: this is critical.
   updateSensor3DVector(&imuBody, &stationaryDetectorBody, fusion_method);
+  delay(100);
   updateSensor3DVector(&imuHead, &stationaryDetectorHead, fusion_method);
+  delay(100);
 }
 
 void loop() {
   hbLEDBlinker.update();
 
-  //updateSensor(&imuBody, &stationaryDetectorBody, fusion_method, "body");
-  updateSensor(&imuHead, &stationaryDetectorHead, fusion_method, "head");
-  delay(50);
+  Quaternion qBody = updateSensor(&imuBody, &stationaryDetectorBody, fusion_method, "body");
+  delay(25);
+  Quaternion qHead = updateSensor(&imuHead, &stationaryDetectorHead, fusion_method, "head");
+  delay(25);
+
+  // Note if you get nan issues it might be your sensor is not detected ToDo: resolve this in the library (ignore the particular sensor).
+
+  float roll, pitch, yaw;
+  qBody.toEulerAngles(roll, pitch, yaw);
+  qBody.printEulerAngles(roll, pitch, yaw, "body");  // just for debugging!
+  Serial.print("  ");
+  qHead.toEulerAngles(roll, pitch, yaw);
+  qBody.printEulerAngles(roll, pitch, yaw, "head");  // just for debugging!
+
+  Serial.print("  ");
+  Quaternion qBodyHead = qHead - qBody;
+  qBodyHead.toEulerAngles(roll, pitch, yaw);
+  qBodyHead.printEulerAngles(roll, pitch, yaw, "head-body");  // just for debugging!
+
+  Serial.println();
 }
