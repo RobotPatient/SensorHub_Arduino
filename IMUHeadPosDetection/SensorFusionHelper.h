@@ -8,11 +8,17 @@ Quaternion headQuaternion(1, 0, 0, 0);
 #define dt (1.0 / sampleRate)  // Time interval
 
 
+
 const int interval = 1000 / sampleRate;
 
-Quaternion updateSensor(BMI270 *imu, Quaternion *q) {
 
-  imu->getSensorData();
+
+Quaternion updateSensorData(BMI270 *imu, Quaternion *q) {
+  if (lastSensorDataUpdate < millis() + min_update_interval) {
+    delay(25);
+    lastSensorDataUpdate = millis();
+  }
+  imu->getSensorData(); // needs to be integrated in inertia detection
   // delay(25);
   //delay(20);
 

@@ -41,11 +41,13 @@
 */
 
 #include "IMUInertiaHelper.h"
+#include "IMUHelper.h"
+
+
 
 
 void updateSensor3DVector(BMI270 *imu, IMUInertiaHelper *helper) {
-  imu->getSensorData();
-  delay(25);
+  updateSensorData(imu);
 
   Vector3D accel = Vector3D(imu->data.accelX, imu->data.accelY, imu->data.accelZ);
 
@@ -53,8 +55,7 @@ void updateSensor3DVector(BMI270 *imu, IMUInertiaHelper *helper) {
 }
 
 void updateSensor(BMI270 *imu, IMUInertiaHelper *helper, String sensorLabel) {
-  imu->getSensorData();
-  delay(25);
+  updateSensorData(imu);
 
   Vector3D currentValues = Vector3D(imu->data.accelX, imu->data.accelY, imu->data.accelZ);
   const bool REPORT_SENSOR_STATE = true;

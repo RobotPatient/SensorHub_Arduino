@@ -93,9 +93,9 @@ bool IMUInertiaHelper::checkForStasis(Vector3D currentValues, bool printResult, 
 void IMUInertiaHelper::printValues(Vector3D values, String label, bool inStasis) {
   String stasisLabel = "";
   if (!inStasis) {
-    stasisLabel = "not";
+    stasisLabel = " not";
   }
-  Serial.print("Sensor " + label + " is " + stasisLabel + " in stasis. (");
+  Serial.print("Sensor " + label + " is" + stasisLabel + " in stasis. (");
   Serial.print(values.x);
   Serial.print(",");
   Serial.print(values.y);

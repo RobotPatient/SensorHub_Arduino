@@ -2,7 +2,7 @@
 *. J.A. Korten Feb 19, 2024
 * Basic implementation for statis / movement detection of the accelerometers.
 *
-* Head positioning detection which includes recalibration when sensors are stationary.
+* Head positioning detection which includes recalibration when sensors are
 * 
 */
 

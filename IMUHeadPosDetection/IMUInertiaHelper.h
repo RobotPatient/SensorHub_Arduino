@@ -43,9 +43,11 @@
 
 #include <Arduino.h>
 #include "Vector3D.h"
+#include "InertiaMeasurements.h"
 
 class IMUInertiaHelper {
 public:
+    
     IMUInertiaHelper();
     IMUInertiaHelper(Vector3D thresholds);
 
