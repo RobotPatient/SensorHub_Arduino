@@ -5,6 +5,8 @@
 #ifndef VECTOR3D_HPP
 #define VECTOR3D_HPP
 
+#include "Arduino.h"
+
 class Vector3D {
 public:
   float x, y, z;

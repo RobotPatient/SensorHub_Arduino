@@ -53,16 +53,16 @@ void updateSensor3DVector(BMI270 *imu, IMUInertiaHelper *helper, Sensor_fusion_m
   helper->recordCurrentValues(accel);
 }
 
-Quaternion updateSensor(BMI270 *imu, IMUInertiaHelper *helper, Sensor_fusion_method method, String sensorLabel) {
-  static Quaternion orientation = Quaternion(1.0, 0.0, 0.0, 0.0);
+Quaternion updateSensor(BMI270 *imu, IMUInertiaHelper *inertiaHelper, SensorFusionHelper *fusionHelper, String sensorLabel) {
+  Quaternion orientation = fusionHelper->getOrientation();
 
-  helper->updateSensorData(imu);
+  inertiaHelper->updateSensorData(imu);
 
   // updateSensorData(BMI270 *imu, Quaternion *q, Sensor_fusion_method method)
 
   Vector3D currentValues = Vector3D(imu->data.accelX, imu->data.accelY, imu->data.accelZ);
   const bool REPORT_SENSOR_STATE = false;
-  bool inStasis = helper->checkForStasis(currentValues, REPORT_SENSOR_STATE, sensorLabel);
+  bool inStasis = inertiaHelper->checkForStasis(currentValues, REPORT_SENSOR_STATE, sensorLabel);
 
   if (inStasis) {
     // recalibrate if needed.
@@ -76,10 +76,13 @@ Quaternion updateSensor(BMI270 *imu, IMUInertiaHelper *helper, Sensor_fusion_met
   gyro3D.y *= DEG_TO_RAD;
   gyro3D.z *= DEG_TO_RAD;
 
-  Quaternion deltaQ = computeQuaternion(accel3D, gyro3D, method);
+  Quaternion deltaQ = fusionHelper->computeQuaternion(accel3D, gyro3D);
   // Update orientation quaternion
   orientation = orientation * deltaQ;
   orientation.normalize();  // Normalize quaternion
+
+  fusionHelper->setOrientation(orientation);
+
   
   return orientation;
 }

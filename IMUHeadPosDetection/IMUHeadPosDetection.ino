@@ -43,7 +43,9 @@ IMUInertiaHelper stationaryDetectorBody(thresholds);
 
 void printQuaternionsAsEulerAngles(Quaternion qBody, Quaternion qHead); // prototype
 
-Sensor_fusion_method fusion_method = SF_Mahony;  // Alt: SF_Madgwick, but seems that our Madgwick implementation has still issues (or is just not performing as well as Mahony (understatement))
+const Sensor_fusion_method fusion_method = SF_Mahony;  // Alt: SF_Madgwick, but seems that our Madgwick implementation has still issues (or is just not performing as well as Mahony (understatement))
+SensorFusionHelper sensorFusionHelperHead(fusion_method);
+SensorFusionHelper sensorFusionHelperBody(fusion_method);
 
 void setupSensorHub() {
   delay(1500);
@@ -79,14 +81,12 @@ void setup() {
       ;
   }
 
-  printAlgorithm(fusion_method);
+  sensorFusionHelperHead.printAlgorithm();
 
   delay(1500);  // note: this is critical.
   updateSensor3DVector(&imuBody, &stationaryDetectorBody, fusion_method);
   updateSensor3DVector(&imuHead, &stationaryDetectorHead, fusion_method);
 }
-
-
 
 // Note: In case you get NaN issues it might be your sensor is not detected 
 // ToDo: resolve this in the library (i.e. ignore the particular sensor).
@@ -94,8 +94,8 @@ void setup() {
 void loop() {
   hbLEDBlinker.update();
 
-  Quaternion qBody = updateSensor(&imuBody, &stationaryDetectorBody, fusion_method, "body");
-  Quaternion qHead = updateSensor(&imuHead, &stationaryDetectorHead, fusion_method, "head");
+  Quaternion qBody = updateSensor(&imuBody, &stationaryDetectorBody, &sensorFusionHelperBody, "body");
+  Quaternion qHead = updateSensor(&imuHead, &stationaryDetectorHead, &sensorFusionHelperHead, "head");
   printQuaternionsAsEulerAngles(qBody, qHead);
 }
 
@@ -104,6 +104,7 @@ void printQuaternionsAsEulerAngles(Quaternion qBody, Quaternion qHead) {
   qBody.toEulerAngles(roll, pitch, yaw);
   qBody.printEulerAngles(roll, pitch, yaw, "body");  // just for debugging!
   Serial.print("  ");
+  
   qHead.toEulerAngles(roll, pitch, yaw);
   qBody.printEulerAngles(roll, pitch, yaw, "head");  // just for debugging!
 
