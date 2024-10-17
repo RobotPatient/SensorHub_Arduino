@@ -29,7 +29,7 @@ TwoWire WireSensorB(&sercom4, W2_SDA, W2_SCL);  // Sensor Port B
 WireHelper wireHelperA(WireSensorA, "A");
 WireHelper wireHelperB(WireSensorB, "B");
 AdcHelper adcHelper(WireSensorA, ADS7138_Address);
-LedHelper ledHelper(ledHb);
+LedHelper heartBeat(ledHb);
 
 // Dependency Injection for DeviceManager
 DeviceManager deviceManager(wireHelperA, adcHelper, ADS7138_Address);
@@ -43,11 +43,11 @@ void setup() {
   PinManager::setupI2CPins(); // Call the pin configuration method
 
 
-  ledHelper.off();  // Turn off heartbeat LED initially
+  heartBeat.off();  // Turn off heartbeat LED initially
   deviceManager.discoverAndInit();
 }
 
 void loop() {
-  ledHelper.update();
+  heartBeat.update();
   deviceManager.readSensorData();
 }
