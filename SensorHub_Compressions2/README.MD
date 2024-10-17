@@ -2,7 +2,7 @@
 
 This project implements touch sensing for a thorax (chest) model using an ADS7138 16-bit ADC and an Arduino microcontroller. It is designed for [your application/project name or context].
 
-This is the version we will add thorax compression sensor implementation to.
+This version adds the Compressions sensor (ToF to detect compression depths and recoils)
 
 ## Hardware
 
@@ -50,29 +50,3 @@ graph LR
     F --> E
     E --> A
     D --> H(LED)
-
-
-classDiagram
-    class AdcHelper {
-        +readSensorValues()
-        -writeToRegister()
-    }
-    class DeviceManager {
-        +discoverAndInit()
-        +readSensorData()
-    }
-    class LedHelper {
-        +update()
-        +on()
-        +off()
-    }
-    class WireHelper {
-        +reportDevicesWithAddress()
-        +reportDevices()
-        +discoverDevice()
-    }
-    class PinManager {
-        +setupI2CPins()
-    }
-    DeviceManager --> AdcHelper
-    DeviceManager --> WireHelper
