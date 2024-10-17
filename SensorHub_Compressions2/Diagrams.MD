@@ -23,5 +23,12 @@ classDiagram
     class PinManager {
         +setupI2CPins()
     }
+    class SensorHub_Compressions {
+        +setup()
+        +loop()
+    }
+    SensorHub_Compressions --> PinManager
+    SensorHub_Compressions --> LedHelper
+    SensorHub_Compressions --> DeviceManager
     DeviceManager --> AdcHelper
     DeviceManager --> WireHelper
