@@ -52,8 +52,6 @@ graph LR
     D --> H(LED)
 
 
-## Class Diagram
-
 classDiagram
     class AdcHelper {
         +readSensorValues()
