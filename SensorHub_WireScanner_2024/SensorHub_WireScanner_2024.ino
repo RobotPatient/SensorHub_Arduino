@@ -94,7 +94,7 @@ void loop() {
   digitalWrite(ledHb, HIGH);
   //boolean result = reportDevicesWithAddressOn(&WireBackbone, 0x60, true);  // 0x10 is maybe finger position sensor.
 
-  //reportDevicesOn(&WireBackbone, "Mainbus");
+  reportDevicesOn(&WireBackbone, "Mainbus");
   reportDevicesOn(&WireSensorA, "Sensors Ax");
   reportDevicesOn(&WireSensorB, "Sensors Bx");
 

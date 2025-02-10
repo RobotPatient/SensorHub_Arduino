@@ -1,0 +1,88 @@
+# .github/rulesets/main.yml
+
+name: Main Ruleset
+
+target: repository
+
+rules:
+  # Require pull requests for all changes
+  - type: pull_request_required
+    parameters:
+      required_approving_review_count: 1 # At least one approval
+      required_status_checks: [] # Add required status checks here if needed (e.g., CI/CD)
+      dismiss_stale_reviews: true # Dismiss outdated reviews when new commits are pushed
+      require_code_owner_reviews: false # Optional: Require code owner review if changes touch owned files
+      branch_protection_rule: # Specify which branches this applies to.  Crucially, protect main/master!
+        pattern: main # Or master, or your primary branch names
+        # You can add more complex branch matching here if needed.
+
+  # Block direct commits to protected branches (main/master)
+  - type: branch_protection_rule
+    parameters:
+      pattern: main # Or master, or your primary branch names
+      required_status_checks: [] # Add required status checks here if needed (e.g., CI/CD)
+      required_approving_review_count: 1 # One approval required for merges
+      dismiss_stale_reviews: true # Dismiss outdated reviews
+      require_code_owner_reviews: false # Optional: Require code owner review
+      allow_force_pushes: false # VERY IMPORTANT: Disallow force pushes to protected branches
+      allow_deletions: false # VERY IMPORTANT: Disallow branch deletion of protected branches.
+      # Other useful branch protection rules:
+      # required_linear_history: true # Prevents non-fast-forward merges (keeps history tidy)
+      # allow_merge_commits: true # Allow merge commits (default)
+      # allow_squash_merges: true # Allow squash merges
+      # allow_rebase_merges: true  # Allow rebase merges
+      # restrictions:  # Limit who can push to this branch (more granular control)
+      #   users: [] # Add specific users
+      #   teams: [] # Add specific teams
+      #   apps: [] # Add specific apps
+
+  # Block pushes of sensitive files (API keys, passwords, etc.)
+  - type: file_name_pattern_match
+    parameters:
+      patterns:
+        - .env # Example: Block .env files
+        - config/*.json # Example: Block JSON config files in the config directory. Customize as needed.
+        - ".*private_key.*" # Example: Block files with "private_key" in the name
+      inclusion: false # Block matching files (don't allow them)
+
+  # Prevent the creation of tags
+  - type: tag_name_pattern_match
+    parameters:
+      patterns:
+        - "*" # You may allow specific tag types here.
+      inclusion: false # Block all tags
+
+  # Prevent the creation of releases
+  - type: release_creation
+    parameters:
+      allowed: false
+
+  # Prevent forking of the repository
+  - type: repository_forking
+    parameters:
+      allowed: false
+
+  # Prevent the creation of issues
+  - type: issue_creation
+    parameters:
+      allowed: true # You can restrict issue creation if needed
+
+  # Prevent the creation of discussions
+  - type: discussion_creation
+    parameters:
+      allowed: true # You can restrict discussion creation if needed
+
+  # Prevent the creation of projects
+  - type: project_creation
+    parameters:
+      allowed: false
+
+  # Prevent the creation of wikis
+  - type: wiki_creation
+    parameters:
+      allowed: false
+
+  # Prevent the creation of pages
+  - type: pages_creation
+    parameters:
+      allowed: false

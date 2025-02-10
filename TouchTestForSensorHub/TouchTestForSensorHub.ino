@@ -23,7 +23,7 @@
 // Escpecially for DevBoard for Ventilations / Soft Robotics actuators.
 //
 
-#include <Wire.h>            // SERCOM3?
+#include <Wire.h>  // SERCOM3?
 #include "deviceHelper.h"
 
 State deviceState = STATE_UNKNOWN;
